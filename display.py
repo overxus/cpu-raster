@@ -15,9 +15,10 @@ class Display:
         return self.__H
 
     def resize(self, width: int, height: int):
+        """重新设置画布的大小"""
         self.__W = width
         self.__H = height
-        self.__Data = np.zeros((self.__H, self.__W, 3), dtype=np.uint8)
+        self.__Data = np.zeros((self.__H, self.__W, 4), dtype=np.uint8)
     
     def save(self, image_path: str):
         """保存为图片"""
@@ -25,6 +26,7 @@ class Display:
         image.save(image_path)
 
     def drawPixel(self, x: int, y: int, color):
+        """向画布的(x, y)位置写入颜色color"""
         self.__Data[y, x] = color
 
 
