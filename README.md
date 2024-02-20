@@ -16,3 +16,6 @@ drawPixel(x: int, y: int, color)  # 向(x, y)处写入颜色color
 ## 4. 三角形颜色插值
 根据三角形顶点的颜色线性插值: alpha * Color(p1) + (1 - alpha) * Color(p2).
 不难，但写起来很繁琐.
+
+## 5. 简单的透视投影
+将三维坐标投影到一个平面上

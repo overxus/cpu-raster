@@ -43,7 +43,7 @@ def drawLine(display: Display, p1, color1, p2, color2):
             color = alpha * color1 + (1 - alpha) * color2
             display.drawPixel(int(x), y, color)
     else:
-        for x, y, alpha in zip(interval(x1, x2), interpolate(x1, y1, x2, y2), interpolate(y1, 1.0, y2, 0.0)):
+        for x, y, alpha in zip(interval(x1, x2), interpolate(x1, y1, x2, y2), interpolate(x1, 1.0, x2, 0.0)):
             color = alpha * color1 + (1 - alpha) * color2
             display.drawPixel(x, int(y), color)
 
