@@ -33,5 +33,5 @@ class Display:
 if __name__ == '__main__':
     display = Display(400, 100)
     for i in range(100, 300):
-        display.drawPixel(i, i // 4, (255, 0, 0))
+        display.drawPixel(i, i // 4, (255, 0, 0, 255))
     display.save('output/test.png')
