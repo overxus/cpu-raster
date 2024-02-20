@@ -1,9 +1,19 @@
+import os
+
 from display import Display
 import draw
 
 
-display = Display(200, 100)
+width = 200
+height = 100
 
-for x, y in draw.drawLine((20, 30), (60, 90)):
+display = Display(width, height)
+p1 = (width // 3, height // 3)
+p2 = (width * 2 // 3, height // 3)
+p3 = (width // 2, height * 2 // 3)
+
+for x, y in draw.drawFilledTriangle(p1, p2, p3):
     display.drawPixel(x, y, (255, 0, 0, 255))
-display.save('output/drawLine.png')
+
+os.makedirs('output', exist_ok=True)
+display.save('output/drawTriangle.png')
