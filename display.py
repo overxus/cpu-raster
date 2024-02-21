@@ -27,7 +27,8 @@ class Display:
 
     def drawPixel(self, x: int, y: int, color):
         """向画布的(x, y)位置写入颜色color"""
-        self.__Data[y, x] = color
+        if 0 <= x < self.__W and 0 <= y < self.__H:
+            self.__Data[y, x] = color
 
 
 if __name__ == '__main__':
