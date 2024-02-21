@@ -21,4 +21,4 @@ class Camera:
         py = vec3.projection(v_rel, self.up)
         px = vec3.projection(v_rel, self.right)
 
-        return (self.__D * px / pz) / (self.__W / 2), (self.__D * py / pz) / (self.__H / 2)
+        return (self.__D * px / pz) / (self.__W / 2), - (self.__D * py / pz) / (self.__H / 2)
