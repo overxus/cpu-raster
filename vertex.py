@@ -14,3 +14,7 @@ class Vertex3d:
         if len(color) == 3:
             color.append(255)
         self.color = make_color(*color)
+    
+    def copy(self):
+        return Vertex3d(vec3(self.position.x, self.position.y, self.position.z),
+                        make_color(self.color[0], self.color[1], self.color[2], self.color[3]))

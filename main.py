@@ -1,5 +1,4 @@
 import os
-import numpy as np
 
 from display import Display
 from camera import Camera
@@ -8,52 +7,35 @@ from vec3 import vec3
 from model import Model
 
 
-def make_color(r: int, g: int, b: int, a: int = 255):
-    return np.array((r, g, b, a), dtype=np.uint8)
-
-R = make_color(255, 0, 0)
-G = make_color(0, 255, 0)
-B = make_color(0, 0, 255)
-
-
-width = 200
-height = 100
+width = 800
+height = 600
 
 display = Display(width, height)
-camera = Camera(vec3(0, 0, -10), vec3(0, 0, 1), vec3(0, 1, 0))
+camera = Camera(vec3(-3, 3, -3), vec3(1, -1, 1), vec3(0, 1, 0), view_width=1, view_height=1)
 
 
-def canvas2Display(p):
-    x, y = p
-    return int(width * (x + 1) / 2), int(height * (y + 1) / 2) 
+def canvas2Display(p: vec3) -> vec3:
+    return vec3(int(width * (p.x + 1) / 2), int(height * (p.y + 1) / 2), p.z) 
 
 
 def drawModel(model: Model, display: Display, camera: Camera):
+    n_triangle = 0
     for triangle_index_list in model.triangle_index_buffer:
         assert len(triangle_index_list) == 3
         idx1, idx2, idx3 = triangle_index_list
-        v1, v2, v3 = model.vertices_dict[idx1], model.vertices_dict[idx2], model.vertices_dict[idx3]
-        
-        draw.drawFilledTriangle(
-            display,
-            canvas2Display(camera.point2canvas(v1.position)), v1.color,
-            canvas2Display(camera.point2canvas(v2.position)), v2.color,
-            canvas2Display(camera.point2canvas(v3.position)), v3.color)
+        v1, v2, v3 = model.vertices_dict[idx1].copy(), model.vertices_dict[idx2].copy(), model.vertices_dict[idx3].copy()
 
-# p1 = vec3(0.0, 0.0, 1.0)
-# p2 = vec3(-0.5, 0.5, 1.0)
-# p3 = vec3(0.0, 0.5, 2.0)
+        # print(v1.position, v2.position, v3.position)
+        # print(camera.view(v1.position), camera.view(v2.position), camera.view(v3.position))
 
+        v1.position = canvas2Display(camera.view(v1.position))
+        v2.position = canvas2Display(camera.view(v2.position))
+        v3.position = canvas2Display(camera.view(v3.position))
 
-# draw.drawFilledTriangle(
-#     display,
-#     canvas2Display(camera.point2canvas(p1)),
-#     R,
-#     canvas2Display(camera.point2canvas(p2)),
-#     G,
-#     canvas2Display(camera.point2canvas(p3)),
-#     B
-# )
+        n_triangle += 1
+        print('\rprocessing triangles: ', n_triangle, end='')
+        draw.drawTriangle(display, v1, v2, v3)
+
 
 model = Model('models/cube.json')
 drawModel(model, display, camera)

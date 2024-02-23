@@ -1,4 +1,5 @@
 from display import Display
+from vertex import Vertex3d
 
 
 Point = tuple[int, int]
@@ -48,14 +49,55 @@ def drawLine(display: Display, p1, color1, p2, color2):
             display.drawPixel(x, int(y), color)
 
 
-def drawTriangle(display: Display, p1, color1, p2, color2, p3, color3):
-    drawLine(display, p1, color1, p2, color2)
-    drawLine(display, p2, color2, p3, color3)
-    drawLine(display, p1, color1, p3, color3)
+def drawTriangle(display: Display, v1: Vertex3d, v2: Vertex3d, v3: Vertex3d):
+    y1 = v1.position.y
+    y2 = v2.position.y
+    y3 = v3.position.y
+    if y1 > y2:
+        v1, v2 = v2, v1
+    if y1 > y3:
+        v1, v3 = v3, v1
+    if y2 > y3:
+        v2, v3 = v3, v2
+    
+    x1, y1 = int(v1.position.x), int(v1.position.y)
+    x2, y2 = int(v2.position.x), int(v2.position.y)
+    x3, y3 = int(v3.position.x), int(v3.position.y)
+
+    x13 = interpolate(y1, x1, y3, x3)
+    c13 = [alpha * v1.color + (1 - alpha) * v3.color for alpha in interpolate(y1, 1.0, y3, 0.0)]
+    z13 = [alpha * v1.position.z + (1 - alpha) * v3.position.z for alpha in interpolate(y1, 1.0, y3, 0.0)]
+
+    x12 = interpolate(y1, x1, y2, x2)
+    c12 = [alpha * v1.color + (1 - alpha) * v2.color for alpha in interpolate(y1, 1.0, y2, 0.0)]
+    z12 = [alpha * v1.position.z + (1 - alpha) * v2.position.z for alpha in interpolate(y1, 1.0, y2, 0.0)]
+
+    x23 = interpolate(y2, x2, y3, x3)
+    c23 = [alpha * v2.color + (1 - alpha) * v3.color for alpha in interpolate(y2, 1.0, y3, 0.0)]
+    z23 = [alpha * v2.position.z + (1 - alpha) * v3.position.z for alpha in interpolate(y2, 1.0, y3, 0.0)]
+
+    x12.pop()
+    c12.pop()
+    z12.pop()
+
+    x123 = x12 + x23
+    c123 = c12 + c23
+    z123 = z12 + z23
+
+    for idx, y in enumerate(interval(y1, y3)):
+        px1, px2 = int(x123[idx]), int(x13[idx])
+        cx1, cx2 = c123[idx], c13[idx]
+        zx1, zx2 = z123[idx], z13[idx]
+
+        for x, alpha in zip(interval(px1, px2), interpolate(px1, 1.0, px2, 0.0)):
+            color = alpha * cx1 + (1 - alpha) * cx2
+            z = alpha * zx1 + (1 - alpha) * zx2
+            display.drawPixel(x, y, color, z)
 
 
+"""
 def drawFilledTriangle(display: Display, p1, color1, p2, color2, p3, color3):
-    """绘制填充的三角形"""
+    # 绘制填充的三角形
     x1, y1 = p1
     x2, y2 = p2
     x3, y3 = p3
@@ -85,3 +127,4 @@ def drawFilledTriangle(display: Display, p1, color1, p2, color2, p3, color3):
         px1, px2 = int(x123[idx]), int(x13[idx])
         cx1, cx2 = c123[idx], c13[idx]
         drawLine(display, (px1, y), cx1, (px2, y), cx2) 
+"""

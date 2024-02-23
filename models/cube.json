@@ -8,17 +8,17 @@
         {
             "index": 2,
             "position": [-1, 1, 1],
-            "color": [255, 255, 0]
+            "color": [255, 0, 0]
         },
         {
             "index": 3,
             "position": [-1, -1, 1],
-            "color": [255, 255, 255]
+            "color": [255, 0, 0]
         },
         {
             "index": 4,
             "position": [1, -1, 1],
-            "color": [255, 0, 255]
+            "color": [255, 0, 0]
         },
         {
             "index": 5,
@@ -28,17 +28,17 @@
         {
             "index": 6,
             "position": [-1, 1, -1],
-            "color": [0, 255, 255]
+            "color": [0, 255, 0]
         },
         {
             "index": 7,
             "position": [-1, -1, -1],
-            "color": [0, 0, 255]
+            "color": [0, 255, 0]
         },
         {
             "index": 8,
             "position": [1, -1, -1],
-            "color": [125, 125, 125]
+            "color": [0, 255, 0]
         }
         ],
         
