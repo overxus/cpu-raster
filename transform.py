@@ -12,6 +12,11 @@ def scale(p: vec3, sv: vec3) -> vec3:
     return p * sv
 
 def rotate(p: vec3, rv: vec3, theta: float) -> vec3:
-    """将点p绕rv旋转theta，这里的theta是弧度制"""
-    # TODO:
-    raise NotImplemented("TODO: 实现旋转变换")
+    """将点p绕rv顺时针旋转theta，这里的theta是弧度制"""
+    proj_rv_p = vec3.projection(p, rv) * vec3.normalize(rv)
+    forward = p - proj_rv_p
+    right = vec3.cross(rv, forward)
+
+    return forward.length * (
+        math.sin(theta) * vec3.normalize(right) + math.cos(theta) * vec3.normalize(forward)
+    ) + proj_rv_p

@@ -50,14 +50,11 @@ def drawLine(display: Display, p1, color1, p2, color2):
 
 
 def drawTriangle(display: Display, v1: Vertex3d, v2: Vertex3d, v3: Vertex3d):
-    y1 = v1.position.y
-    y2 = v2.position.y
-    y3 = v3.position.y
-    if y1 > y2:
+    if v1.position.y > v2.position.y:
         v1, v2 = v2, v1
-    if y1 > y3:
+    if v1.position.y > v3.position.y:
         v1, v3 = v3, v1
-    if y2 > y3:
+    if v2.position.y > v3.position.y:
         v2, v3 = v3, v2
     
     x1, y1 = int(v1.position.x), int(v1.position.y)
@@ -92,7 +89,7 @@ def drawTriangle(display: Display, v1: Vertex3d, v2: Vertex3d, v3: Vertex3d):
         for x, alpha in zip(interval(px1, px2), interpolate(px1, 1.0, px2, 0.0)):
             color = alpha * cx1 + (1 - alpha) * cx2
             z = alpha * zx1 + (1 - alpha) * zx2
-            display.drawPixel(x, y, color, z)
+            display.drawPixel(x, y, z, color)
 
 
 """

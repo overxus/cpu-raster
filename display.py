@@ -1,40 +1,45 @@
 import numpy as np
 from PIL import Image
+from vec3 import vec3
 
 
 class Display:
     def __init__(self, width: int, height: int):
-        self.resize(width, height)
+        self.setViewport(width, height)
     
-    @property
-    def width(self):
-        return self.__W
-    
-    @property
-    def height(self):
-        return self.__H
+    def setViewport(self, width: int, height: int):
+        """设置画布大小"""
+        self.width, self.height = width, height
+        self.colorBuffer = np.zeros((self.height, self.width, 4), dtype=np.uint8)
+        self.depthBuffer = np.full((self.height, self.width), fill_value=np.inf, dtype=np.float32)
 
-    def resize(self, width: int, height: int):
-        """重新设置画布的大小"""
-        self.__W = width
-        self.__H = height
-        self.__Data = np.zeros((self.__H, self.__W, 4), dtype=np.uint8)
-        self.__DepthBuffer = np.full((self.__H, self.__W), fill_value=np.inf, dtype=np.float32)
-    
-    def save(self, image_path: str):
-        """保存为图片"""
-        image = Image.fromarray(self.__Data)
-        image.save(image_path)
+    def clearColorBuffer(self):
+        self.colorBuffer = np.zeros((self.height, self.width, 4), dtype=np.uint8)
 
-    def drawPixel(self, x: int, y: int, color, z: float):
-        """向画布的(x, y)位置写入颜色color"""
-        if 0 <= x < self.__W and 0 <= y < self.__H and z < self.__DepthBuffer[y, x]:
-            self.__Data[y, x] = color
-            self.__DepthBuffer[y, x] = z
+    def clearDepthBuffer(self):
+        self.depthBuffer = np.full((self.height, self.width), fill_value=np.inf, dtype=np.float32)
+
+    def drawPixel(self, x: int, y: int, z: float, color):
+        """将(x, y)处的颜色color写入颜色缓冲中, z是这一点的深度"""
+        if 0 <= x < self.width and 0 <= y < self.height:
+            if z < self.depthBuffer[y, x]:
+                self.colorBuffer[y, x] = color
+                self.depthBuffer[y, x] = z
+
+    def save(self, image_save_path: str):
+        """保存画布为图片"""
+        img = Image.fromarray(self.colorBuffer)
+        img.save(image_save_path)
+
+    def device2viewport(self, p: vec3) -> vec3:
+        """p是x, y分量标准化为[-1, 1]的设备坐标"""
+        vx = int(self.width * (p.x + 1) / 2)
+        vy = int(self.height * (p.y + 1) / 2)
+        return vec3(vx, vy, p.z)
 
 
 if __name__ == '__main__':
     display = Display(400, 100)
     for i in range(100, 300):
-        display.drawPixel(i, i // 4, (255, 0, 0, 255))
+        display.drawPixel(i, i // 4, 1.0, (255, 0, 0, 255))
     display.save('output/test.png')
