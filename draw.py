@@ -63,28 +63,28 @@ def drawTriangle(display: Display, v1: Vertex3d, v2: Vertex3d, v3: Vertex3d):
 
     x13 = interpolate(y1, x1, y3, x3)
     c13 = [alpha * v1.color + (1 - alpha) * v3.color for alpha in interpolate(y1, 1.0, y3, 0.0)]
-    z13 = [alpha * v1.position.z + (1 - alpha) * v3.position.z for alpha in interpolate(y1, 1.0, y3, 0.0)]
+    z13_inv = [alpha * 1 / v1.position.z + (1 - alpha) * 1 / v3.position.z for alpha in interpolate(y1, 1.0, y3, 0.0)]
 
     x12 = interpolate(y1, x1, y2, x2)
     c12 = [alpha * v1.color + (1 - alpha) * v2.color for alpha in interpolate(y1, 1.0, y2, 0.0)]
-    z12 = [alpha * v1.position.z + (1 - alpha) * v2.position.z for alpha in interpolate(y1, 1.0, y2, 0.0)]
+    z12_inv = [alpha * 1 / v1.position.z + (1 - alpha) * 1 / v2.position.z for alpha in interpolate(y1, 1.0, y2, 0.0)]
 
     x23 = interpolate(y2, x2, y3, x3)
     c23 = [alpha * v2.color + (1 - alpha) * v3.color for alpha in interpolate(y2, 1.0, y3, 0.0)]
-    z23 = [alpha * v2.position.z + (1 - alpha) * v3.position.z for alpha in interpolate(y2, 1.0, y3, 0.0)]
+    z23_inv = [alpha * 1 / v2.position.z + (1 - alpha) * 1 / v3.position.z for alpha in interpolate(y2, 1.0, y3, 0.0)]
 
     x12.pop()
     c12.pop()
-    z12.pop()
+    z12_inv.pop()
 
     x123 = x12 + x23
     c123 = c12 + c23
-    z123 = z12 + z23
+    z123_inv = z12_inv + z23_inv
 
     for idx, y in enumerate(interval(y1, y3)):
         px1, px2 = int(x123[idx]), int(x13[idx])
         cx1, cx2 = c123[idx], c13[idx]
-        zx1, zx2 = z123[idx], z13[idx]
+        zx1, zx2 = 1 / z123_inv[idx], 1 / z13_inv[idx]
 
         for x, alpha in zip(interval(px1, px2), interpolate(px1, 1.0, px2, 0.0)):
             color = alpha * cx1 + (1 - alpha) * cx2
